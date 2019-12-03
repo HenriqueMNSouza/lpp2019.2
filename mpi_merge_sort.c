@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<time.h> 
 
-#define SIZE 32 
+#define SIZE 1024 
 
 //-------------------------
 
@@ -105,18 +105,21 @@ int 	*v,
 	*new_vet,
 	*final_vet,
 	*temp;
-
+double ts_start;
 MPI_Status status;
 MPI_Init(&argc, &argv);
 MPI_Comm_rank(MPI_COMM_WORLD, &meu_rank);
 MPI_Comm_size(MPI_COMM_WORLD,&np);
-
+	
+	if(meu_rank == 0i){
+		ts_start = MPI_Wtime();
+	}
 	//if(meu_rank != 1) return 0;
 	v = create_random_vet(meu_rank);
 	len_fatia_vetor = SIZE/n;
 	//printf("fatia_vetor: %d - np: %d\n",len_fatia_vetor,np);
 	local_vet = &v[len_fatia_vetor*meu_rank];
-	
+		
 	if(meu_rank ==0){
 		new_vet = (int*)malloc( SIZE*sizeof(int));
 		int t =0;
@@ -145,6 +148,7 @@ MPI_Comm_size(MPI_COMM_WORLD,&np);
 	if(meu_rank == 0){
 		fprintf(stderr,"Printando vetor ordenado: ");
 		print_vet(final_vet,SIZE);
+		printf("Tempo de exeção: %f\n",MPI_Wtime()-ts_start);
 	}
 	
 MPI_Finalize();
